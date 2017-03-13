@@ -9,13 +9,13 @@ public class TransmiterJava {
 		byte message[] = new byte[256];
 		for (int x = 0; x < Integer.parseInt(args[1]); x++) {
 			DatagramSocket socket = new DatagramSocket(); // open new socket
-			if (x == Integer.parseInt(args[1])-1)
-				msgString = "This is the last packet";
-			message = msgString.getBytes();
 			InetAddress address = InetAddress.getByName(host);
 			System.out.println("Sending to: " + address);
 			long time = System.nanoTime();
 			String msgString = "Message" + x + " sent at " + time;
+			if (x == Integer.parseInt(args[1])-1)
+				msgString = "This is the last packet";
+			message = msgString.getBytes();
 			DatagramPacket packet = new DatagramPacket(message, message.length, address, PORT);
 			socket.send(packet);
 			System.out.println("Message" + x + " sent " + time);
