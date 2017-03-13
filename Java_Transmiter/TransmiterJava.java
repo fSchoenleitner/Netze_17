@@ -29,7 +29,7 @@ public class TransmiterJava {
 	
 	private static void sendTerminationString(InetAddress address, int port) throws IOException{
 		DatagramSocket socket = new DatagramSocket(); 
-		String msgString = "This is the last packet";
+		String msgString = "EndOfTransmission";
 		byte[] message = msgString.getBytes();
 		DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
 		socket.send(packet);
