@@ -14,12 +14,12 @@ public class TransmiterJava {
 			DatagramSocket socket = new DatagramSocket(); // open new socket
 			System.out.println("Sending to: " + address);
 			msgString="Message "+x+" sent at ";
-			startTime = System.nanoTime();
+			startTime = System.currentTimeMillis();
 			msgString = msgString+startTime;			
 			message = msgString.getBytes();
 			DatagramPacket packet = new DatagramPacket(message, message.length, address, PORT);
 			socket.send(packet);
-			endTime = System.nanoTime();
+			endTime = System.currentTimeMillis();
 			duration=endTime-startTime;
 			System.out.println(msgString);
 			socket.close();
