@@ -8,11 +8,8 @@
 int main(int argc, char *argv[]){
     SOCKET s;
     struct sockaddr_in addr;
-    int slen , recv_len;
-	int buflen=atoi(argv[2]);
+    int slen , recv_len, buflen=atoi(argv[2]), port=atoi(argv[1]), numbOfPacket=1000;
     char buf[buflen];
-	int port=atoi(argv[1]);
-	int numbOfPacket=1000;
     WSADATA wsa;
 	printf("port: %d  buflen %d  number: %d\n", port, buflen, numbOfPacket);
     slen = sizeof(addr) ;
@@ -42,8 +39,8 @@ int main(int argc, char *argv[]){
     }
     printf("Bind done\n");
 
-	int i=0;
-    while(i<numbOfPacket){
+	int i=1;
+    while(i){
         printf("Waiting...");
         fflush(stdout);
          
@@ -59,7 +56,7 @@ int main(int argc, char *argv[]){
         //print details of the client/peer and the data received
         printf("Received packet from %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
         printf("Packet: %s\n" , buf);
-		i++;
+		i=strcmp(buf, "EndOfTransmission");
     }
  
     closesocket(s);
