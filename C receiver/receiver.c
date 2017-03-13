@@ -3,19 +3,19 @@
  
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
  
-
+//compilieren mit option -lws2_32
  
 int main(int argc, char *argv[]){
     SOCKET s;
-    struct sockaddr_in server, si_other;
+    struct sockaddr_in addr;
     int slen , recv_len;
 	int buflen=atoi(argv[2]);
     char buf[buflen];
 	int port=atoi(argv[1]);
-	int numbOfPacket=atoi(argv[3]);
+	int numbOfPacket=1000;
     WSADATA wsa;
 	printf("port: %d  buflen %d  number: %d\n", port, buflen, numbOfPacket);
-    slen = sizeof(si_other) ;
+    slen = sizeof(addr) ;
      
     //Initialise winsock
     printf("Initialising Winsock...\n");
@@ -30,13 +30,13 @@ int main(int argc, char *argv[]){
     }
     printf("Socket created\n");
      
-    //Prepare the server's sockaddr_in structure
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons( port );
+    //Prepare the addr's sockaddr_in structure
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = htons( port );
      
-    //Bind socket to server
-    if( bind(s ,(struct sockaddr *)&server , sizeof(server)) == SOCKET_ERROR){
+    //Bind socket to receiver
+    if( bind(s ,(struct sockaddr *)&addr , sizeof(addr)) == SOCKET_ERROR){
         printf("Bind failed with error code : %d" , WSAGetLastError());
         exit(EXIT_FAILURE);
     }
@@ -51,13 +51,13 @@ int main(int argc, char *argv[]){
         memset(buf,'\0', buflen);
          
         //try to receive some data, this is a blocking call
-        if ((recv_len = recvfrom(s, buf, buflen, 0, (struct sockaddr *) &si_other, &slen)) == SOCKET_ERROR){
+        if ((recv_len = recv(s, buf, buflen, 0)) == SOCKET_ERROR){
             printf("recvfrom() failed with error code : %d" , WSAGetLastError());
             exit(EXIT_FAILURE);
         }
          
         //print details of the client/peer and the data received
-        printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
+        printf("Received packet from %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
         printf("Packet: %s\n" , buf);
 		i++;
     }
