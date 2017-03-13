@@ -1,5 +1,9 @@
+
 #include<stdio.h>
 #include<winsock2.h>
+#include<time.h>
+#include<stdlib.h>
+#include<windows.h>
  
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
  
@@ -8,10 +12,13 @@
 int main(int argc, char *argv[]){
     SOCKET s;
     struct sockaddr_in addr;
-    int slen , recv_len, buflen=atoi(argv[2]), port=atoi(argv[1]), numbOfPacket=1000;
+    int slen , recv_len, buflen=atoi(argv[2]), port=atoi(argv[1]);
     char buf[buflen];
     WSADATA wsa;
-	printf("port: %d  buflen %d  number: %d\n", port, buflen, numbOfPacket);
+	SYSTEMTIME end_time, start_time;
+	long end_millis, start_millis, rec_millis, rec_duration, transm_duration;
+	char *millis;
+	printf("port: %d  buflen: %d\n", port, buflen);
     slen = sizeof(addr) ;
      
     //Initialise winsock
@@ -48,15 +55,28 @@ int main(int argc, char *argv[]){
         memset(buf,'\0', buflen);
          
         //try to receive some data, this is a blocking call
-        if ((recv_len = recv(s, buf, buflen, 0)) == SOCKET_ERROR){
+        GetSystemTime(&start_time);
+		if ((recv_len = recv(s, buf, buflen, 0)) == SOCKET_ERROR){
             printf("recvfrom() failed with error code : %d" , WSAGetLastError());
             exit(EXIT_FAILURE);
         }
+		GetSystemTime(&end_time);
+		start_millis=(start_time.wSecond * 1000) + start_time.wMilliseconds;
+		end_millis=(end_time.wSecond * 1000) + end_time.wMilliseconds;
+		rec_duration=end_millis-start_millis;
          
         //print details of the client/peer and the data received
-        printf("Received packet from %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
-        printf("Packet: %s\n" , buf);
 		i=strcmp(buf, "EndOfTransmission");
+		if(i){
+			millis=strstr(buf, "at ");
+			*millis=*(millis+4);
+			transm_duration=atoi(millis);
+			printf("Received packet from %s:%d in time %d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), transm_duration);
+			printf("Packet: %s\n" , buf);
+		}else{
+			printf("Transmission terminated!\n");
+		}
+		
     }
  
     closesocket(s);
