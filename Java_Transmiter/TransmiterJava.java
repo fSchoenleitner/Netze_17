@@ -3,23 +3,36 @@ import java.net.*;
 
 public class TransmiterJava {
 	public static void main(String args[]) throws IOException {
-		System.out.println("Einage ist: PORT | ANZAHL DER PAKETE |  Host = localhost");
+		System.out.println("Eingabe ist: PORT | ANZAHL DER PAKETE |  Host = localhost");
 		final int PORT = Integer.parseInt(args[0]); 
 		String host = args[2]; //"localhost"
-		byte message[] = new byte[256];
+		InetAddress address = InetAddress.getByName(host);
+		byte[] message;
+		String num;
+		long startTime, endTime, duration;
 		for (int x = 0; x < Integer.parseInt(args[1]); x++) {
 			DatagramSocket socket = new DatagramSocket(); // open new socket
-			InetAddress address = InetAddress.getByName(host);
 			System.out.println("Sending to: " + address);
-			long time = System.nanoTime();
-			String msgString = "Message" + x + " sent at " + time;
-			if (x == Integer.parseInt(args[1])-1)
-				msgString = "This is the last packet";
+			num=Integer.toString(x);
+			startTime = System.nanoTime();
+			String msgString = "Message " + num + " sent at " + startTime;				
 			message = msgString.getBytes();
 			DatagramPacket packet = new DatagramPacket(message, message.length, address, PORT);
 			socket.send(packet);
-			System.out.println("Message" + x + " sent " + time);
+			endTime = System.nanoTime();
+			duration=endTime-startTime;
+			System.out.println(msgString);
 			socket.close();
 		}
+		sendTerminationString(address, PORT);
+	}
+	
+	private static void sendTerminationString(InetAddress address, int port) throws IOException{
+		DatagramSocket socket = new DatagramSocket(); 
+		String msgString = "This is the last packet";
+		byte[] message = msgString.getBytes();
+		DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
+		socket.send(packet);
+		socket.close();
 	}
 }
