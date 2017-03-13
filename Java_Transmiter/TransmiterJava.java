@@ -8,14 +8,14 @@ public class TransmiterJava {
 		String host = args[2]; //"localhost"
 		InetAddress address = InetAddress.getByName(host);
 		byte[] message;
-		String num;
+		String msgString;
 		long startTime, endTime, duration;
 		for (int x = 0; x < Integer.parseInt(args[1]); x++) {
 			DatagramSocket socket = new DatagramSocket(); // open new socket
 			System.out.println("Sending to: " + address);
-			num=Integer.toString(x);
+			msgString="Message "+x+" sent at ";
 			startTime = System.nanoTime();
-			String msgString = "Message " + num + " sent at " + startTime;				
+			msgString = msgString+startTime;			
 			message = msgString.getBytes();
 			DatagramPacket packet = new DatagramPacket(message, message.length, address, PORT);
 			socket.send(packet);
