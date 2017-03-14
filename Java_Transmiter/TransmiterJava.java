@@ -12,7 +12,8 @@ public class TransmiterJava {
 		long startTime, endTime, duration;
 		DatagramSocket socket = new DatagramSocket();
 		for (int x = 0; x < Integer.parseInt(args[1]); x++) {
-			System.out.println("Sending to: " + address);
+			System.out.println();
+			System.out.println("Sending to: " + address+":"+PORT);
 			msgString="Message "+x+" sent at ";
 			startTime = System.currentTimeMillis();
 			msgString = msgString+startTime;			
