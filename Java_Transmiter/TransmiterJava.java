@@ -10,8 +10,8 @@ public class TransmiterJava {
 		byte[] message;
 		String msgString;
 		long startTime, endTime, duration;
+		DatagramSocket socket = new DatagramSocket();
 		for (int x = 0; x < Integer.parseInt(args[1]); x++) {
-			DatagramSocket socket = new DatagramSocket(); // open new socket
 			System.out.println("Sending to: " + address);
 			msgString="Message "+x+" sent at ";
 			startTime = System.currentTimeMillis();
@@ -22,13 +22,11 @@ public class TransmiterJava {
 			endTime = System.currentTimeMillis();
 			duration=endTime-startTime;
 			System.out.println(msgString);
-			socket.close();
 		}
-		sendTerminationString(address, PORT);
+		sendTerminationString(address, PORT, socket);
 	}
 	
-	private static void sendTerminationString(InetAddress address, int port) throws IOException{
-		DatagramSocket socket = new DatagramSocket(); 
+	private static void sendTerminationString(InetAddress address, int port, DatagramSocket socket) throws IOException{
 		String msgString = "EndOfTransmission";
 		byte[] message = msgString.getBytes();
 		DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
