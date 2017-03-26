@@ -9,19 +9,14 @@ public class TransmiterJava {
 		InetAddress address = InetAddress.getByName(host);
 		byte[] message;
 		String msgString;
-		long startTime, endTime, duration;
 		DatagramSocket socket = new DatagramSocket();
-		for (int x = 0; x < Integer.parseInt(args[1]); x++) {
+		for (int x = 1; x <= Integer.parseInt(args[1]); x++) {
 			System.out.println();
 			System.out.println("Sending to: " + address+":"+PORT);
-			msgString="Message "+x+" sent at ";
-			startTime = System.currentTimeMillis();
-			msgString = msgString+startTime;			
+			msgString="Message "+x;			
 			message = msgString.getBytes();
 			DatagramPacket packet = new DatagramPacket(message, message.length, address, PORT);
 			socket.send(packet);
-			endTime = System.currentTimeMillis();
-			duration=endTime-startTime;
 			System.out.println(msgString);
 		}
 		sendTerminationString(address, PORT, socket);
